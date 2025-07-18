@@ -68,5 +68,106 @@ describe('PlayersService', () => {
 
       expect(mockPlayerModel.create).toHaveBeenCalledWith(mockPlayer);
     });
+
+    it('should throw an error if player already exists', async () => {
+      mockPlayerModel.findOne.mockReturnValueOnce(mockPlayer);
+
+      const sut = service.createPlayer({
+        name: mockPlayer.name,
+        email: mockPlayer.email,
+        phone: mockPlayer.phone,
+      });
+
+      await expect(sut).rejects.toThrow('Player already exists');
+    });
+  });
+
+  describe('getPlayers', () => {
+    it('should return an empty array', async () => {
+      mockPlayerModel.find.mockReturnValueOnce([]);
+
+      const players = await service.getPlayers();
+
+      expect(mockPlayerModel.find).toHaveBeenCalled();
+      expect(players).toEqual([]);
+    });
+
+    it('should return an array of players', async () => {
+      mockPlayerModel.find.mockReturnValueOnce([mockPlayer]);
+
+      const players = await service.getPlayers();
+
+      expect(mockPlayerModel.find).toHaveBeenCalled();
+      expect(players).toEqual([mockPlayer]);
+    });
+  });
+
+  describe('getPlayer', () => {
+    it('should return a player', async () => {
+      mockPlayerModel.findById.mockReturnValueOnce(mockPlayer);
+
+      const player = await service.getPlayer(mockPlayer.id);
+
+      expect(mockPlayerModel.findById).toHaveBeenCalledWith(mockPlayer.id);
+      expect(player).toEqual(mockPlayer);
+    });
+
+    it('should throw an error if player not found', async () => {
+      mockPlayerModel.findById.mockReturnValueOnce(null);
+
+      const sut = service.getPlayer(mockPlayer.id);
+
+      await expect(sut).rejects.toThrow('Player not found');
+      expect(mockPlayerModel.findById).toHaveBeenCalledWith(mockPlayer.id);
+    });
+
+    describe('updatePlayer', () => {
+      it('should update a player', async () => {
+        mockPlayerModel.findById.mockReturnValueOnce(mockPlayer);
+        mockPlayerModel.updateOne.mockReturnValueOnce({});
+
+        await service.updatePlayer(mockPlayer.id, {
+          name: mockPlayer.name,
+        });
+
+        expect(mockPlayerModel.updateOne).toHaveBeenCalledWith(
+          { id: mockPlayer.id },
+          { name: mockPlayer.name },
+        );
+      });
+
+      it('should throw an error if player not found', async () => {
+        mockPlayerModel.findById.mockReturnValueOnce(null);
+
+        const sut = service.updatePlayer(mockPlayer.id, {
+          name: mockPlayer.name,
+        });
+
+        await expect(sut).rejects.toThrow('Player not found');
+        expect(mockPlayerModel.findById).toHaveBeenCalledWith(mockPlayer.id);
+      });
+    });
+
+    describe('deletePlayer', () => {
+      it('should delete a player', async () => {
+        mockPlayerModel.findById.mockReturnValueOnce(mockPlayer);
+        mockPlayerModel.deleteOne.mockReturnValueOnce({});
+
+        await service.deletePlayer(mockPlayer.id);
+
+        expect(mockPlayerModel.deleteOne).toHaveBeenCalledWith({
+          id: mockPlayer.id,
+        });
+      });
+
+      it('should throw an error if player not found', async () => {
+        mockPlayerModel.findById.mockReturnValueOnce(null);
+
+        const sut = service.deletePlayer(mockPlayer.id);
+
+        await expect(sut).rejects.toThrow('Player not found');
+        expect(mockPlayerModel.findById).toHaveBeenCalledWith(mockPlayer.id);
+      });
+    });
   });
 });
