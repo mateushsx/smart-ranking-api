@@ -6,6 +6,8 @@ import {
   Param,
   Post,
   Put,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { CreatePlayerDTO } from './dtos/create-player.dtos';
 import { PlayersService } from './players.service';
@@ -17,6 +19,7 @@ export class PlayersController {
   constructor(private readonly playersService: PlayersService) {}
 
   @Post()
+  @UsePipes(ValidationPipe)
   async createPlayer(@Body() createPlayerDTO: CreatePlayerDTO) {
     await this.playersService.createPlayer(createPlayerDTO);
   }
