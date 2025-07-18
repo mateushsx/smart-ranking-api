@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { PlayersController } from './players.controller';
 import { PlayersService } from './players.service';
 import { CreatePlayerDTO } from './dtos/create-player.dtos';
+import { UpdatePlayerDTO } from './dtos/update-player.dtos';
 
 const mockPlayersService = {
   getPlayers: jest.fn(),
@@ -15,6 +16,10 @@ const mockCreatePlayerDTO: CreatePlayerDTO = {
   name: 'Test Player',
   email: 'player@example.com',
   phone: '1234567890',
+};
+
+const mockUpdatePlayerDTO: UpdatePlayerDTO = {
+  name: 'Updated name',
 };
 
 describe('PlayersController', () => {
@@ -47,6 +52,41 @@ describe('PlayersController', () => {
       expect(mockPlayersService.createPlayer).toHaveBeenCalledWith(
         mockCreatePlayerDTO,
       );
+    });
+  });
+
+  describe('getPlayers', () => {
+    it('should call the getPlayers method', async () => {
+      await controller.getPlayers();
+
+      expect(mockPlayersService.getPlayers).toHaveBeenCalled();
+    });
+  });
+
+  describe('getPlayer', () => {
+    it('should call the getPlayer method', async () => {
+      await controller.getPlayer('unique-id');
+
+      expect(mockPlayersService.getPlayer).toHaveBeenCalledWith('unique-id');
+    });
+  });
+
+  describe('updatePlayer', () => {
+    it('should call the updatePlayer method', async () => {
+      await controller.updatePlayer('unique-id', mockUpdatePlayerDTO);
+
+      expect(mockPlayersService.updatePlayer).toHaveBeenCalledWith(
+        'unique-id',
+        mockUpdatePlayerDTO,
+      );
+    });
+  });
+
+  describe('deletePlayer', () => {
+    it('should call the deletePlayer method', async () => {
+      await controller.deletePlayer('unique-id');
+
+      expect(mockPlayersService.deletePlayer).toHaveBeenCalledWith('unique-id');
     });
   });
 });
