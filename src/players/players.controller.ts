@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseUUIDPipe,
   Post,
   Put,
   UsePipes,
@@ -30,20 +31,20 @@ export class PlayersController {
   }
 
   @Get(':id')
-  async getPlayer(@Param('id') id: string): Promise<IPlayer> {
+  async getPlayer(@Param('id', ParseUUIDPipe) id: string): Promise<IPlayer> {
     return this.playersService.getPlayer(id);
   }
 
   @Put(':id')
   async updatePlayer(
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body() updatePlayerDTO: UpdatePlayerDTO,
   ) {
     await this.playersService.updatePlayer(id, updatePlayerDTO);
   }
 
   @Delete(':id')
-  async deletePlayer(@Param('id') id: string) {
+  async deletePlayer(@Param('id', ParseUUIDPipe) id: string) {
     await this.playersService.deletePlayer(id);
   }
 }
