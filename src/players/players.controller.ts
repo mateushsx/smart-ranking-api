@@ -36,6 +36,7 @@ export class PlayersController {
   }
 
   @Put(':id')
+  @UsePipes(ValidationPipe)
   async updatePlayer(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updatePlayerDTO: UpdatePlayerDTO,
